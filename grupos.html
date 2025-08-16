@@ -1,210 +1,259 @@
-import React, { useState } from 'react';
-import { ChevronRight, ChevronsRight, Users, BookOpen, Target, FileText, Activity, ArrowLeft } from 'lucide-react';
-
-// Datos proporcionados
-const projectData = [
-  {
-    id: 1,
-    title: "Salud Comunitaria",
-    participants: [
-      { name: 'LUZ MARIA ROJAS GALLEGUILLOS', profession: 'ENFERMERÍA', subjects: 'SALUD COMUNITARIA', career: 'ENFERMERÍA, TECN NIV SUP ENFERM' },
-      { name: 'KARINA JARA RODRIGUEZ', profession: 'TRABAJO SOCIAL', subjects: 'PROYEC SOCIALES, TALLER INT INVESTIG SOCIAL, POLITICAS PUBLICAS', career: 'LINEA INTERVENCIÓN COMUNITARIA (LIC)' },
-      { name: 'XIMENA MORENO', profession: 'ENFERMERÍA', subjects: 'ENFERMERIA, MEDICINA GRAL', career: '' },
-    ],
-    projectDetails: {
-      asignaturaProyecto: 'SALUD COMUNITARIA',
-      raa: 'RAA5 Demostrar habilidades comunicacionales y de trabajo en equipo a partir de la implementación de actividades de servicio.',
-      unidad: 'Unidad 2: Componentes de la promoción en salud, Programación educativa, Principales conceptos de la educación en salud y la educación en el adulto.',
-      contenidos: 'Componentes de la promoción en salud, programación educativa, principales conceptos de la educación en salud, desarrollo de habilidades comunicacionales e introducción a las herramientas humanas.',
-      actividad: 'Discusión y análisis sobre los Componentes de la promoción en salud, Programación educativa, Principales conceptos de la educación en salud y la educación en el adulto, actividades comunicaciones verbales y no verbales.'
-    }
-  },
-  {
-    id: 2,
-    title: "Gestión y Emprendimiento en Salud",
-    participants: [
-      { name: 'ANNETTE REBOLLEDO', profession: 'KINESIOLOGÍA', subjects: 'PRACT CLINICA INTEGRADA', career: 'KINESIOLOGIA' },
-      { name: 'ANDREA ALLIENDE OTERO', profession: 'ENFERMERA', subjects: 'PROCESOS ENFERMERO, ADULTO MAYOR', career: 'ENFERMERIA' },
-    ],
-    projectDetails: {
-      asignaturaProyecto: 'Gestión y emprendimiento en salud',
-      raa: 'Diseñar proyectos en equipo, que respondan a las necesidades o problemáticas de una comunidad como propuesta de mejora de la calidad de vida utilizando una metodología participativa.',
-      unidad: 'Unidad 2',
-      contenidos: '- Proyectos en salud.',
-      actividad: 'Operativo de salud comunitario interdisciplinar.'
-    }
-  },
-  {
-    id: 3,
-    title: "Team Building y Liderazgo",
-    participants: [
-      { name: 'ALEJANDRA JERIA CASTAÑER', profession: 'PROF EDUC FISICA', subjects: 'TEAM BUILDING, LIDERAZGO', career: 'DIP PRODUCCIÒN EVENTOS' },
-      { name: 'MONICA RIQUELME', profession: 'SOCIOLOGIA', subjects: 'SEMINARIO DE GRADO, ATENCIÒN DIÁLOGO ACCIÒN INTEGRACIÒN.', career: 'PSICOLOGIA' },
-      { name: 'DIEGO MORALES', profession: 'PSICOLOGO', subjects: '', career: '' },
-    ],
-    projectDetails: {
-      asignaturaProyecto: 'Team building y liderazgo',
-      raa: 'Conocer los fundamentos del Team Building en función del Liderazgo situacional para la mejora continua.',
-      unidad: 'Unidad n°2',
-      contenidos: '- Fundamentos del T.B. - Etapas del T.B -Principios del Liderazgo situacional. - Herramientas y dinámicas para la mejora continua.',
-      actividad: 'Caso práctico o simulación: aplicar un ejercicio de Team Building con enfoque de liderazgo situacional, según propósito corporativo.'
-    }
-  },
-  {
-    id: 4,
-    title: "Fundamentos Sociales y Epistemología",
-    participants: [
-      { name: 'RODRIGO ORELLANA', profession: 'TRABAJO SOCIAL', subjects: 'FUND SOCIALES, EPISTEMOLOGIA', career: 'PSICOLOGÍA' },
-    ],
-    projectDetails: {
-        asignaturaProyecto: 'No especificado',
-        raa: 'No especificado',
-        unidad: 'No especificado',
-        contenidos: 'No especificado',
-        actividad: 'No especificado'
-    }
-  },
-  {
-    id: 5,
-    title: "Intervención Neurokinésica",
-    participants: [
-      { name: 'GISELA VALDÉS BETANZO', profession: 'PROF EDUC FISICA', subjects: 'PRACTICAS PROFESIONALES', career: 'LIC CIENCIAS ACT FISICA, PEDAG EDUC FISICA' },
-      { name: 'ALEXANDER BRAVO', profession: 'KINESIOLOGO', subjects: 'INTERVENCION NEUROKINESICA II', career: 'KINESIOLOGIA' },
-      { name: 'FELIPE GACITUA', profession: 'NUTRICIONISTA', subjects: '', career: '' },
-    ],
-    projectDetails: {
-      asignaturaProyecto: 'Intervencion Neurokinésica I',
-      raa: 'RAA2: Determinar la disfunción global y específica, de acuerdo con el fundamento del desarrollo psicomotor normal, atípico y neuroplasticidad.',
-      unidad: 'UNIDAD 1: Desarrollo Psicomotor y bases de los principales modelos terapeúticos para usuarios pediátricos con trastornos neurológicos.',
-      contenidos: '• Desarrollo Atípico y manejo postural básico en usuarios pediátricos con lesiones neurológicas centrales y no centrales.',
-      actividad: 'No especificado'
-    }
-  }
-];
-
-// Componente para una tarjeta de participante
-const ParticipantCard = ({ participant }) => (
-  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-colors duration-300">
-    <h4 className="font-bold text-orange-600">{participant.name}</h4>
-    <p className="text-sm text-gray-700">{participant.profession}</p>
-    {participant.subjects && <p className="text-xs mt-1 text-gray-500"><strong>Asignaturas:</strong> {participant.subjects}</p>}
-    {participant.career && <p className="text-xs mt-1 text-gray-500"><strong>Carrera:</strong> {participant.career}</p>}
-  </div>
-);
-
-// Componente para un item de detalle del proyecto
-const DetailItem = ({ icon, title, children }) => (
-  <div className="flex items-start space-x-4">
-    <div className="flex-shrink-0 w-8 h-8 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mt-1">
-      {icon}
-    </div>
-    <div>
-      <h4 className="font-semibold text-gray-700">{title}</h4>
-      <p className="text-gray-600 text-sm">{children}</p>
-    </div>
-  </div>
-);
-
-// Componente para la vista de detalles de un grupo
-const GroupDetail = ({ group, onBack }) => (
-  <div className="animate-fade-in">
-    <button
-      onClick={onBack}
-      className="mb-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 focus:ring-offset-gray-100 transition-all duration-300"
-    >
-      <ArrowLeft className="mr-2 h-5 w-5" />
-      Volver a la Lista
-    </button>
-
-    <div className="bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-      <div className="p-6 sm:p-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-orange-600 mb-2">Grupo {group.id}: {group.title}</h2>
-        <p className="text-gray-500 mb-6">Detalles del proyecto y sus integrantes.</p>
-
-        <div className="space-y-6">
-          <div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-4 border-b-2 border-orange-200 pb-2 flex items-center"><Users className="mr-3 text-orange-500" />Participantes</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {group.participants.map((p, index) => (
-                <ParticipantCard key={index} participant={p} />
-              ))}
-            </div>
-          </div>
-          
-          <div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-4 border-b-2 border-orange-200 pb-2 flex items-center"><ChevronsRight className="mr-3 text-orange-500" />Detalles del Proyecto</h3>
-            <div className="space-y-5 mt-4">
-              <DetailItem icon={<FileText size={16} />} title="Asignatura del Proyecto">
-                {group.projectDetails.asignaturaProyecto}
-              </DetailItem>
-              <DetailItem icon={<Target size={16} />} title="RAA / Objetivo de Aprendizaje">
-                {group.projectDetails.raa}
-              </DetailItem>
-              <DetailItem icon={<BookOpen size={16} />} title="Unidad">
-                {group.projectDetails.unidad}
-              </DetailItem>
-              <DetailItem icon={<FileText size={16} />} title="Contenidos">
-                {group.projectDetails.contenidos}
-              </DetailItem>
-              <DetailItem icon={<Activity size={16} />} title="Actividad Cooperativa">
-                {group.projectDetails.actividad}
-              </DetailItem>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-// Componente para la lista de grupos
-const GroupList = ({ onSelectGroup }) => (
-  <div className="animate-fade-in">
-    <h1 className="text-3xl sm:text-4xl font-bold text-center text-orange-600 mb-2">Navegador de Proyectos</h1>
-    <p className="text-center text-gray-500 mb-8">Selecciona un grupo para ver los detalles.</p>
-    <div className="space-y-4">
-      {projectData.map(group => (
-        <button
-          key={group.id}
-          onClick={() => onSelectGroup(group)}
-          className="w-full text-left p-5 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-100 transition-all duration-300 flex justify-between items-center group"
-        >
-          <div>
-            <h2 className="text-xl font-bold text-orange-700 group-hover:text-orange-600">Grupo {group.id}: {group.title}</h2>
-            <p className="text-sm text-gray-600 mt-1">{group.participants.length} participante(s)</p>
-          </div>
-          <ChevronRight className="text-gray-400 group-hover:text-orange-500 transition-transform duration-300 group-hover:translate-x-1" />
-        </button>
-      ))}
-    </div>
-  </div>
-);
-
-// Componente principal de la aplicación
-export default function App() {
-  const [selectedGroup, setSelectedGroup] = useState(null);
-
-  return (
-    <div className="bg-gray-100 text-gray-800 min-h-screen font-sans p-4 sm:p-8">
-      <style>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Completa de Aprendizaje y Colaboración Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
         }
-        .animate-fade-in {
-          animation: fade-in 0.5s ease-out forwards;
+        /* Estilo para el botón de navegación activo con color naranja */
+        .nav-link.active {
+            background-color: #ea580c; /* orange-600 */
+            color: white;
         }
-      `}</style>
-      <div className="max-w-4xl mx-auto">
-        {selectedGroup ? (
-          <GroupDetail group={selectedGroup} onBack={() => setSelectedGroup(null)} />
-        ) : (
-          <GroupList onSelectGroup={setSelectedGroup} />
-        )}
-      </div>
-       <footer className="text-center mt-12 text-gray-500 text-sm">
-        <p>Aplicación generada para la visualización de datos de proyectos.</p>
-      </footer>
+        /* Transiciones suaves para el cambio de contenido */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <!-- Título principal -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-orange-800">Guía de Aprendizaje y Colaboración Digital</h1>
+            <p class="text-lg text-gray-600 mt-2">Desde metodologías activas hasta la producción entre pares en entornos digitales.</p>
+        </header>
+
+        <!-- Navegación Unificada -->
+        <nav class="bg-white rounded-lg shadow-md p-2 mb-8 flex flex-wrap justify-center gap-2">
+            <button class="nav-link active text-sm md:text-base font-medium px-4 py-2 rounded-md transition-colors duration-300 hover:bg-orange-500 hover:text-white" onclick="showSection('inicio')">Inicio</button>
+            <button class="nav-link text-sm md:text-base font-medium px-4 py-2 rounded-md transition-colors duration-300 hover:bg-orange-500 hover:text-white" onclick="showSection('cooperativo')">A. Cooperativo</button>
+            <button class="nav-link text-sm md:text-base font-medium px-4 py-2 rounded-md transition-colors duration-300 hover:bg-orange-500 hover:text-white" onclick="showSection('colaborativo')">A. Colaborativo</button>
+            <button class="nav-link text-sm md:text-base font-medium px-4 py-2 rounded-md transition-colors duration-300 hover:bg-orange-500 hover:text-white" onclick="showSection('diferencias')">Diferencias</button>
+            <button class="nav-link text-sm md:text-base font-medium px-4 py-2 rounded-md transition-colors duration-300 hover:bg-orange-500 hover:text-white" onclick="showSection('produccionPares')">Producción Pares</button>
+            <button class="nav-link text-sm md:text-base font-medium px-4 py-2 rounded-md transition-colors duration-300 hover:bg-orange-500 hover:text-white" onclick="showSection('tecnologias')">Tecnologías</button>
+            <button class="nav-link text-sm md:text-base font-medium px-4 py-2 rounded-md transition-colors duration-300 hover:bg-orange-500 hover:text-white" onclick="showSection('innovacion')">Innovación</button>
+            <button class="nav-link text-sm md:text-base font-medium px-4 py-2 rounded-md transition-colors duration-300 hover:bg-orange-500 hover:text-white" onclick="showSection('desafios')">Desafíos</button>
+            <button class="nav-link text-sm md:text-base font-medium px-4 py-2 rounded-md transition-colors duration-300 hover:bg-orange-500 hover:text-white" onclick="showSection('futuro')">Futuro</button>
+            <button class="nav-link text-sm md:text-base font-medium px-4 py-2 rounded-md transition-colors duration-300 hover:bg-orange-500 hover:text-white" onclick="showSection('visualizacion')">Visualización 1</button>
+            <!-- Nuevo botón para la segunda visualización -->
+            <button class="nav-link text-sm md:text-base font-medium px-4 py-2 rounded-md transition-colors duration-300 hover:bg-orange-500 hover:text-white" onclick="showSection('visualizacion2')">Visualización 2</button>
+        </nav>
+
+        <!-- Contenedor de contenido dinámico -->
+        <main id="content-container" class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+            <!-- Sección de Inicio (Combinada) -->
+            <section id="inicio" class="content-section">
+                <h2 class="text-3xl font-bold text-orange-700 mb-4">La Revolución del Aprendizaje y la Colaboración</h2>
+                <p class="mb-6">Las metodologías activas y la colaboración digital están transformando la educación y la producción de conocimiento. Este cambio mueve el foco desde un modelo tradicional hacia uno donde el participante se involucra activamente en la construcción de su propio aprendizaje y en la creación de valor colectivo, tanto en el aula como en redes globales.</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-lg">
+                        <h3 class="font-bold text-lg mb-2 text-orange-600">Modelo Tradicional</h3>
+                        <ul class="list-disc list-inside text-gray-700">
+                            <li>Transmisión unidireccional</li>
+                            <li>Pasividad del participante</li>
+                            <li>Jerarquías rígidas</li>
+                        </ul>
+                    </div>
+                    <div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg">
+                        <h3 class="font-bold text-lg mb-2 text-orange-600">Enfoque Colaborativo</h3>
+                        <ul class="list-disc list-inside text-gray-700">
+                            <li>Construcción conjunta del conocimiento</li>
+                            <li>Participación activa y distribuida</li>
+                            <li>Redes horizontales y auto-organizadas</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección de Aprendizaje Cooperativo -->
+            <section id="cooperativo" class="content-section">
+                <h2 class="text-3xl font-bold text-orange-700 mb-4">Aprendizaje Cooperativo (AC)</h2>
+                <p class="mb-6">Es una estrategia pedagógica estructurada donde los estudiantes trabajan en pequeños grupos con roles específicos para maximizar su propio aprendizaje y el de sus compañeros.</p>
+                <div class="p-6 bg-gray-50 rounded-lg border">
+                    <h3 class="font-bold text-lg mb-2 text-orange-600">Características Principales</h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Estructura Definida:</strong> El docente diseña la organización y asigna roles.</li>
+                        <li><strong>Interdependencia Positiva:</strong> El esfuerzo individual beneficia al colectivo.</li>
+                        <li><strong>Responsabilidad Individual:</strong> Cada estudiante responde por sus tareas.</li>
+                        <li><strong>Evaluación Diferenciada:</strong> Se valora el proceso colectivo y el aporte individual.</li>
+                    </ul>
+                </div>
+                <!-- Video de YouTube añadido -->
+                <div class="mt-8">
+                    <h3 class="text-2xl font-bold text-orange-700 mb-4">Video Explicativo</h3>
+                    <div class="aspect-w-16 aspect-h-9">
+                         <iframe class="w-full aspect-video rounded-lg shadow-md" src="https://www.youtube.com/embed/WWHgDdG6eoE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección de Aprendizaje Colaborativo -->
+            <section id="colaborativo" class="content-section">
+                <h2 class="text-3xl font-bold text-orange-700 mb-4">Aprendizaje Colaborativo</h2>
+                <p class="mb-6">Es un proceso educativo flexible donde los estudiantes trabajan juntos para construir conocimiento de manera conjunta, sin una estructura rígida predeterminada, centrado en el diálogo y la negociación.</p>
+                <div class="p-6 bg-gray-50 rounded-lg border">
+                    <h3 class="font-bold text-lg mb-2 text-orange-600">Elementos Distintivos</h3>
+                     <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Proceso Flexible:</strong> Los participantes comparten experiencias para enriquecer el aprendizaje.</li>
+                        <li><strong>Co-construcción del Conocimiento:</strong> Todos contribuyen sin roles predefinidos.</li>
+                        <li><strong>Responsabilidad Compartida:</strong> El éxito es del grupo en su conjunto.</li>
+                        <li><strong>Docente como Facilitador:</strong> El profesor observa y apoya, no dirige.</li>
+                    </ul>
+                </div>
+                <!-- Video de YouTube añadido -->
+                <div class="mt-8">
+                    <h3 class="text-2xl font-bold text-orange-700 mb-4">Video Explicativo</h3>
+                    <div class="aspect-w-16 aspect-h-9">
+                         <iframe class="w-full aspect-video rounded-lg shadow-md" src="https://www.youtube.com/embed/Zj2KGqQeFZo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección de Diferencias -->
+            <section id="diferencias" class="content-section">
+                <h2 class="text-3xl font-bold text-orange-700 mb-6">Diferencias: Cooperativo vs. Colaborativo</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="text-left font-semibold p-3">Dimensión</th>
+                                <th class="text-left font-semibold p-3 text-orange-800">Aprendizaje Cooperativo</th>
+                                <th class="text-left font-semibold p-3 text-amber-800">Aprendizaje Colaborativo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-t"><td class="p-3 font-medium">Estructura</td><td class="p-3">Altamente estructurado</td><td class="p-3">Menos estructurado, flexible</td></tr>
+                            <tr class="border-t bg-gray-50"><td class="p-3 font-medium">Control docente</td><td class="p-3">Profesor diseña y asigna roles</td><td class="p-3">Profesor como observador/facilitador</td></tr>
+                            <tr class="border-t"><td class="p-3 font-medium">Responsabilidad</td><td class="p-3">Individual y grupal definida</td><td class="p-3">Compartida y conjunta</td></tr>
+                            <tr class="border-t bg-gray-50"><td class="p-3 font-medium">Evaluación</td><td class="p-3">Individual y grupal</td><td class="p-3">Centrada en el producto grupal</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Sección: Producción entre Pares -->
+            <section id="produccionPares" class="content-section">
+                <h2 class="text-3xl font-bold text-orange-700 mb-4">Colaboración y Producción entre Pares</h2>
+                <p class="mb-6">Este modelo se basa en la auto-organización de participantes que interactúan libremente para crear bienes y servicios, democratizando el conocimiento y la innovación a escala global.</p>
+                <blockquote class="border-l-4 border-orange-500 pl-4 py-2 my-6 bg-gray-100 rounded-r-lg">
+                    <p class="italic text-gray-600">"La producción entre pares representa la innovación organizativa más significativa surgida de las prácticas sociales mediadas por Internet." - Benkler (2017)</p>
+                </blockquote>
+            </section>
+
+            <!-- Sección de Tecnologías -->
+            <section id="tecnologias" class="content-section">
+                <h2 class="text-3xl font-bold text-orange-700 mb-4">Taxonomía de Tecnologías Colaborativas</h2>
+                <p class="mb-6">Las herramientas digitales son el pilar de la colaboración moderna. Se pueden clasificar según su función principal.</p>
+                <div class="space-y-4">
+                    <div class="p-4 bg-orange-50 border-l-4 border-orange-500 rounded-r-lg"><h3 class="font-bold text-lg text-orange-600">Comunicación</h3><p>Facilitan el intercambio de información (Zoom, Slack).</p></div>
+                    <div class="p-4 bg-orange-50 border-l-4 border-orange-500 rounded-r-lg"><h3 class="font-bold text-lg text-orange-600">Coordinación</h3><p>Ayudan a organizar tareas y flujos de trabajo (Trello, Asana).</p></div>
+                    <div class="p-4 bg-orange-50 border-l-4 border-orange-500 rounded-r-lg"><h3 class="font-bold text-lg text-orange-600">Repositorios</h3><p>Permiten almacenar y gestionar conocimiento colectivo (Wikis, Google Docs, Git).</p></div>
+                </div>
+            </section>
+
+            <!-- Sección de Innovación -->
+            <section id="innovacion" class="content-section">
+                <h2 class="text-3xl font-bold text-orange-700 mb-4">Innovación y Acción Colectiva en Redes</h2>
+                <p class="mb-6">La acción colectiva digital es un esfuerzo coordinado para lograr un objetivo común. Esto da lugar a las redes de innovación colaborativa (COINs), que son sistemas emergentes de auto-organización para crear soluciones innovadoras.</p>
+                 <div class="p-6 bg-gray-50 rounded-lg border">
+                    <h3 class="font-bold text-lg mb-2 text-orange-600">Características de la Innovación Colectiva</h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Participación voluntaria y flexible.</li>
+                        <li>Coordinación distribuida y gobernanza emergente.</li>
+                        <li>Flujo libre de información y conocimiento compartido.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Sección de Desafíos -->
+            <section id="desafios" class="content-section">
+                <h2 class="text-3xl font-bold text-orange-700 mb-4">Desafíos de la Colaboración Digital</h2>
+                <p class="mb-6">A pesar de los avances, la colaboración digital enfrenta obstáculos significativos que limitan su efectividad.</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-4 bg-rose-50 border-l-4 border-rose-500 rounded-r-lg"><h3 class="font-bold text-lg mb-2 text-orange-600">Brecha Digital</h3><p>Desigualdad en acceso y alfabetización digital.</p></div>
+                    <div class="p-4 bg-rose-50 border-l-4 border-rose-500 rounded-r-lg"><h3 class="font-bold text-lg mb-2 text-orange-600">Barreras Técnicas</h3><p>Incompatibilidad entre plataformas y seguridad.</p></div>
+                    <div class="p-4 bg-rose-50 border-l-4 border-rose-500 rounded-r-lg"><h3 class="font-bold text-lg mb-2 text-orange-600">Desafíos Socioculturales</h3><p>Falta de presencia social y dificultad para generar confianza.</p></div>
+                    <div class="p-4 bg-rose-50 border-l-4 border-rose-500 rounded-r-lg"><h3 class="font-bold text-lg mb-2 text-orange-600">Limitaciones Organizacionales</h3><p>Estructuras rígidas y resistencia al cambio.</p></div>
+                </div>
+            </section>
+            
+            <!-- Sección de Futuro -->
+            <section id="futuro" class="content-section">
+                <h2 class="text-3xl font-bold text-orange-700 mb-4">Tendencias Futuras y Tecnologías Emergentes</h2>
+                <p class="mb-6">Las tecnologías emergentes están redefiniendo los paradigmas de colaboración y producción entre pares.</p>
+                <div class="p-6 bg-orange-50 border-l-4 border-orange-500 rounded-r-lg">
+                    <h3 class="font-bold text-lg mb-2 text-orange-600">Ecosistema Emergente 2025-2030</h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>IA Colaborativa:</strong> Asistentes inteligentes para facilitar la coordinación.</li>
+                        <li><strong>Metaverso y VR Inmersiva:</strong> Espacios virtuales para una colaboración más rica.</li>
+                        <li><strong>Web3 y DAOs:</strong> Nuevos modelos de gobernanza y propiedad descentralizada.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Sección con Iframe 1 -->
+            <section id="visualizacion" class="content-section">
+                <h2 class="text-3xl font-bold text-orange-700 mb-4">Colaboración y Producción entre Pares</h2>
+                <p class="mb-6">A continuación se presenta una visualización interactiva sobre el tema. Puede explorar el contenido directamente en la presentación embebida.</p>
+                <div class="flex justify-center">
+                    <iframe src="https://gamma.app/embed/347cm6azkvq46cr" style="width: 700px; max-width: 100%; height: 450px; border-radius: 8px; border: 1px solid #ddd;" allow="fullscreen" title="Colaboración y Producción entre Pares"></iframe>
+                </div>
+            </section>
+            
+            <!-- Nueva Sección con Iframe 2 -->
+            <section id="visualizacion2" class="content-section">
+                <h2 class="text-3xl font-bold text-orange-700 mb-4">Aprendizaje Cooperativo y Colaborativo</h2>
+                <p class="mb-6">Explore esta presentación interactiva para profundizar en las diferencias conceptuales y estructurales de estas metodologías pedagógicas.</p>
+                <div class="flex justify-center">
+                    <iframe src="https://gamma.app/embed/a22r6hp3wtbmxgs" style="width: 700px; max-width: 100%; height: 450px; border-radius: 8px; border: 1px solid #ddd;" allow="fullscreen" title="Aprendizaje Cooperativo y Colaborativo"></iframe>
+                </div>
+            </section>
+
+        </main>
     </div>
-  );
-}
+
+    <script>
+        // Lógica para manejar la navegación entre secciones
+        const sections = document.querySelectorAll('.content-section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        function showSection(sectionId) {
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+
+            const activeSection = document.getElementById(sectionId);
+            if (activeSection) {
+                activeSection.style.display = 'block';
+            }
+            
+            const activeLink = document.querySelector(`.nav-link[onclick="showSection('${sectionId}')"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+
+        // Mostrar la sección de inicio por defecto al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('inicio');
+        });
+    </script>
+
+</body>
+</html>
+
